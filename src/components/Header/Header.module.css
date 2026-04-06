@@ -1,0 +1,132 @@
+.header {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── Location search (takes remaining space) ──────── */
+
+.inputGroup {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.inputRow {
+  display: flex;
+  gap: 4px;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  box-sizing: border-box;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 15px;
+  background: var(--input-bg);
+  color: var(--text-h);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.input:focus {
+  border-color: var(--accent);
+}
+
+.input::placeholder {
+  color: var(--text);
+  opacity: 0.6;
+}
+
+.button {
+  flex-shrink: 0;
+  height: 40px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--input-bg);
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.15s;
+  gap: 6px;
+  padding: 0 14px;
+  color: var(--text-h);
+  font-size: 14px;
+  font-weight: 500;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+
+.button:hover {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  background: var(--dropdown-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 9px 14px;
+  border: none;
+  background: none;
+  color: var(--text-h);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.dropdownItem:hover,
+.dropdownItemHighlighted {
+  background: var(--accent-bg);
+}
+
+.dropdownItem strong {
+  color: var(--text-h);
+}
+
+.dropdownItem span {
+  color: var(--text);
+}
+
+.dropdownSearching {
+  padding: 9px 14px;
+  font-size: 13px;
+  color: var(--text);
+  font-style: italic;
+  list-style: none;
+}

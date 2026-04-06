@@ -1,0 +1,149 @@
+.carousel {
+  position: relative;
+  padding: 16px 0 8px;
+}
+
+.carouselInner {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.arrow {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+  z-index: 2;
+}
+
+.arrow:hover {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+}
+
+.arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.track {
+  flex: 1;
+  overflow: hidden;
+}
+
+.cards {
+  display: flex;
+  transition: transform 0.3s ease;
+}
+
+.card {
+  flex: 0 0 calc(100% / 7);
+  min-width: 0;
+  padding: 8px 4px;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+
+.card:hover {
+  background: var(--accent-bg);
+}
+
+.cardSelected {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.dayName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-h);
+  margin: 0;
+}
+
+.temps {
+  font-size: 13px;
+  margin: 2px 0;
+}
+
+.tempHigh {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.tempLow {
+  color: #3b82f6;
+}
+
+.iconWrap {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0;
+}
+
+.summary {
+  font-size: 11px;
+  color: var(--text);
+  margin: 2px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.precipRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text);
+  margin-top: 2px;
+}
+
+.precipIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.sunRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--text);
+  margin-top: 4px;
+}
+
+.sunIcon {
+  width: 14px;
+  height: 14px;
+}
+
+@media (max-width: 900px) {
+  .card {
+    flex: 0 0 calc(100% / 4);
+  }
+}
+
+@media (max-width: 600px) {
+  .card {
+    flex: 0 0 calc(100% / 3);
+  }
+}

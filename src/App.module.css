@@ -1,0 +1,36 @@
+.welcome {
+  text-align: center;
+  padding: 48px 20px 0;
+  color: var(--text);
+}
+
+.welcomeTitle {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-h);
+  margin: 0 0 10px;
+}
+
+.welcomeSubtitle {
+  font-size: 15px;
+  margin: 0;
+  color: var(--text);
+}
+
+.welcomeSubtitle a {
+  color: var(--accent);
+}
+
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.errorState {
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
+  color: var(--danger);
+}
