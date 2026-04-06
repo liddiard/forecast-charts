@@ -88,7 +88,7 @@ export const useWeatherStore = create<WeatherStore>()(
       setTheme: (t) => set({ theme: t }),
     }),
     {
-      name: 'weather-forecast-storage',
+      name: 'forecast-charts-storage',
       partialize: (state) => ({
         apiKey: state.apiKey,
         units: state.units,
