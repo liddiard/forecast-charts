@@ -26,3 +26,4 @@
 ## HTML writing guidelines
 
 - Always use semantic HTML elements; e.g. avoid using `<div>` if an element type exists that is more specific and appropriate to the content it contains.
+- Ensure elements are accessible. This includes keyboard navigation, and ARIA roles/attributes where appropriate.
