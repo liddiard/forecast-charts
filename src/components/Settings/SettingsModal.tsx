@@ -57,7 +57,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             ✕
           </button>
         </div>
-        <SettingsContent />
+        <SettingsContent onSave={onClose} />
       </div>
     </dialog>
   )

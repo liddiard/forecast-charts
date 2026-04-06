@@ -1,4 +1,4 @@
-import { useWeatherStore, type ThemeMode } from '../../store/useWeatherStore'
+import type { ThemeMode } from '../../store/useWeatherStore'
 import styles from './Settings.module.css'
 
 const options: { value: ThemeMode; label: string; title?: string }[] = [
@@ -7,10 +7,14 @@ const options: { value: ThemeMode; label: string; title?: string }[] = [
   { value: 'dark', label: 'Dark' },
 ]
 
-export function ThemeToggle({ showLabel = true }: { showLabel?: boolean }) {
-  const theme = useWeatherStore((s) => s.theme)
-  const setTheme = useWeatherStore((s) => s.setTheme)
+interface Props {
+  value: ThemeMode
+  onChange: (t: ThemeMode) => void
+  showLabel?: boolean
+}
 
+/** Controlled theme toggle button group. */
+export function ThemeToggle({ value, onChange, showLabel = true }: Props) {
   return (
     <div className={styles.themeGroup}>
       {showLabel && <span className={styles.themeLabel}>Theme</span>}
@@ -18,8 +22,8 @@ export function ThemeToggle({ showLabel = true }: { showLabel?: boolean }) {
         {options.map((opt) => (
           <button
             key={opt.value}
-            className={`${styles.themeButton} ${theme === opt.value ? styles.themeButtonActive : ''}`}
-            onClick={() => setTheme(opt.value)}
+            className={`${styles.themeButton} ${value === opt.value ? styles.themeButtonActive : ''}`}
+            onClick={() => onChange(opt.value)}
             title={opt.title}
             type="button"
           >

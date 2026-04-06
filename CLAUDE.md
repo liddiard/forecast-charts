@@ -1,4 +1,4 @@
-# TypeScript coding guidelines
+## TypeScript coding guidelines
 
 - Follow the DRY (don't repeat yourself) principle: Abstract shared logic into reusable functions.
 - Use modern ECMAScript syntax.
@@ -9,16 +9,20 @@
 - Prefer functional array methods (e.g. `.map`, `.reduce`) over their imperative analogues.
 - Prefer keeping objects immutable, creating new objects (e.g. with spread syntax) over mutating existing ones.
 
-# React coding guidelines
+## React coding guidelines
 
 - Same guidelines as TypeScript apply, especially regarding immutable objects and functional array methods.
 - Comment all `useEffect` usages to explain why it's necessary / what it's doing.
 - For any even semi-expensive calculation within a component, wrap it in a `useMemo` or `useCallback` as appropriate.
 - Comment all `useMemo` or `useCallback` usages to explain what it's doing.
 
-# CSS writing guidelines
+## CSS writing guidelines
 
 - Follow the DRY (don't repeat yourself) principle: Use CSS variables to avoid hardcoding values that are used in multiple places.
 - Use modern CSS features and syntax, including CSS nesting.
 - Prefer the OKLCH color space for defining colors.
 - Prefer EM and REM units for sizes, especially relating to text.
+
+## HTML writing guidelines
+
+- Always use semantic HTML elements; e.g. avoid using `<div>` if an element type exists that is more specific and appropriate to the content it contains.

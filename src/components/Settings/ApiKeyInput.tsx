@@ -1,17 +1,14 @@
 import { useState } from 'react'
-import { useWeatherStore } from '../../store/useWeatherStore'
 import styles from './Settings.module.css'
 
-export function ApiKeyInput() {
-  const apiKey = useWeatherStore((s) => s.apiKey)
-  const setApiKey = useWeatherStore((s) => s.setApiKey)
-  const [value, setValue] = useState(apiKey ?? '')
-  const [visible, setVisible] = useState(false)
+interface Props {
+  value: string
+  onChange: (value: string) => void
+}
 
-  const handleSave = () => {
-    const trimmed = value.trim()
-    if (trimmed) setApiKey(trimmed)
-  }
+/** Controlled API key input with local visibility toggle. */
+export function ApiKeyInput({ value, onChange }: Props) {
+  const [visible, setVisible] = useState(false)
 
   return (
     <div className={styles.inputGroup}>
@@ -25,9 +22,7 @@ export function ApiKeyInput() {
           type={visible ? 'text' : 'password'}
           className={styles.input}
           value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onBlur={handleSave}
-          onKeyDown={(e) => e.key === 'Enter' && handleSave()}
+          onChange={(e) => onChange(e.target.value)}
           placeholder="Pirate Weather API key"
           spellCheck={false}
           autoComplete="off"
