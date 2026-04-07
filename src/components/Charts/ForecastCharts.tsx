@@ -3,6 +3,7 @@ import { TemperatureChart } from './TemperatureChart'
 import { AtmosphereChart } from './AtmosphereChart'
 import { PrecipitationChart } from './PrecipitationChart'
 import { WindChart } from './WindChart'
+import { SunChart } from './SunChart'
 import styles from './Charts.module.css'
 
 export function ForecastCharts() {
@@ -23,6 +24,9 @@ export function ForecastCharts() {
       </div>
       <div className={styles.chartSection}>
         <WindChart />
+      </div>
+      <div className={styles.chartSection}>
+        <SunChart />
       </div>
     </div>
   )

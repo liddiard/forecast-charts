@@ -17,11 +17,13 @@
   },
   "dependencies": {
     "@bybas/weather-icons": "^2.0.0",
+    "@types/suncalc": "^1.9.2",
     "date-fns": "^4.1.0",
     "echarts": "^6.0.0",
     "echarts-for-react": "^3.0.6",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "suncalc": "^1.9.0",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
