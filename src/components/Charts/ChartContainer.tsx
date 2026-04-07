@@ -39,14 +39,12 @@ function getClosestValue(
 }
 
 /**
- * Renders colored inline labels at each series' y-position for the hovered x value,
- * replacing the standard tooltip box. Labels are sorted top-to-bottom by chart position
- * and flip to the left side when the cursor is near the right edge.
+ * Renders a single consolidated tooltip showing all series values for the hovered
+ * x position. Values are sorted top-to-bottom by chart position and colored by
+ * series color using ECharts rich text. Flips to the left side when the cursor
+ * is near the right edge.
  *
- * Uses stable per-label element IDs (`hl-0`, `hl-1`, …) so stale labels from a
- * previous render with more series are explicitly removed rather than lingering.
- *
- * @returns The number of labels rendered, for use as `prevCount` on the next call.
+ * @returns 1 if a tooltip was rendered, 0 otherwise.
  */
 function renderInlineLabels(
   instance: echarts.ECharts,
@@ -79,8 +77,16 @@ function renderInlineLabels(
       const color = (s as { itemStyle?: { color?: string } }).itemStyle?.color ?? '#374151'
       const rounded = Math.round(closest.bestY * 10) / 10
       const displayVal = Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1)
-      labels.push({ x: pixel[0], y: pixel[1], value: displayVal, color })
+
+      // Extract unit from series name, e.g. "Temperature (°C)" → "°C"
+      const name = (s as { name?: string }).name ?? ''
+      const unitMatch = name.match(/\(([^)]+)\)/)
+      const unit = unitMatch ? ` ${unitMatch[1]}` : ''
+
+      labels.push({ x: pixel[0], y: pixel[1], value: displayVal + unit, color })
     })
+
+    if (!labels.length) return 0
 
     // Sort top to bottom by vertical position on the chart
     labels.sort((a, b) => a.y - b.y)
@@ -90,56 +96,67 @@ function renderInlineLabels(
     const xOffset = showOnLeft ? -10 : 10
     const textAlign = showOnLeft ? 'right' : 'left'
 
-    // Parse bgColor hex to rgba with 90% opacity for label backgrounds
+    // Parse bgColor hex to rgba with 80% opacity for label background
     const r = parseInt(bgColor.slice(1, 3), 16)
     const g = parseInt(bgColor.slice(3, 5), 16)
     const b = parseInt(bgColor.slice(5, 7), 16)
-    const bgRgba = `rgba(${r},${g},${b},0.9)`
+    const bgRgba = `rgba(${r},${g},${b},0.8)`
 
-    // Use individual element IDs so we can explicitly remove stale ones
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const elements: any[] = labels.map((l, i) => ({
-      id: `hl-${i}`,
-      type: 'text',
-      $action: 'replace',
-      x: l.x + xOffset,
-      y: l.y,
-      style: {
-        text: l.value,
-        fill: l.color,
-        fontSize: 12,
-        fontWeight: 'bold',
-        textAlign,
-        textBaseline: 'middle',
-        backgroundColor: bgRgba,
-      },
-      z: 100,
-    }))
+    // Build rich text: each series value gets its own color style
+    const rich: Record<
+      string,
+      { fill: string; fontSize: number; fontWeight: string; lineHeight: number }
+    > = {}
+    const textParts: string[] = []
+    labels.forEach((l, i) => {
+      const key = `s${i}`
+      rich[key] = { fill: l.color, fontSize: 12, fontWeight: 'bold', lineHeight: 18 }
+      textParts.push(`{${key}|${l.value}}`)
+    })
 
-    // Remove any elements left over from a previous render with more series
-    for (let i = labels.length; i < prevCount; i++) {
-      elements.push({ id: `hl-${i}`, $action: 'remove' })
-    }
+    // Vertically center the tooltip within the chart grid area
+    const gridOpt = (Array.isArray(opt.grid) ? opt.grid[0] : opt.grid) as
+      | { top?: number; bottom?: number }
+      | undefined
+    const gridTop = gridOpt?.top ?? 16
+    const gridBottom = gridOpt?.bottom ?? 52
+    const tooltipHeight = labels.length * 18
+    const yPos = (gridTop + (instance.getHeight() - gridBottom)) / 2 - tooltipHeight / 2
 
-    instance.setOption({ graphic: elements })
-    return labels.length
+    instance.setOption({
+      graphic: [
+        {
+          id: 'hl-tooltip',
+          type: 'text',
+          $action: 'replace',
+          x: labels[0].x + xOffset,
+          y: yPos,
+          style: {
+            text: textParts.join('\n'),
+            rich,
+            textAlign,
+            textBaseline: 'middle',
+            backgroundColor: bgRgba,
+            padding: [2, 4],
+            borderRadius: 3,
+          },
+          z: 100,
+        },
+      ],
+    })
+    return 1
   } catch {
     return prevCount
   }
 }
 
 /**
- * Removes all inline hover labels previously rendered by `renderInlineLabels`.
+ * Removes the consolidated inline tooltip rendered by `renderInlineLabels`.
  * No-ops if `count` is 0 to avoid unnecessary `setOption` calls.
  */
 function clearInlineLabels(instance: echarts.ECharts, count: number) {
   if (count === 0) return
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const removals: any[] = []
-  for (let i = 0; i < count; i++) {
-    removals.push({ id: `hl-${i}`, $action: 'remove' })
-  }
-  instance.setOption({ graphic: removals })
+  instance.setOption({ graphic: [{ id: 'hl-tooltip', $action: 'remove' }] })
 }
 
 const GROUP_ID = 'forecast'

@@ -76,7 +76,7 @@ export function WindChart() {
           ]
           const dir = directions[Math.round(bearing / 22.5) % 16]
           const gustParam = (params as { seriesName: string; value: [number, number] }[]).find(
-            (p) => p.seriesName === 'Wind Gust',
+            (p) => p.seriesName === `Wind Gust (${windLabel})`,
           )
           const gustStr = gustParam
             ? `<br/>Wind Gust: ${Math.round(gustParam.value[1])} ${windLabel}`
@@ -84,17 +84,20 @@ export function WindChart() {
           return `<strong>${timeStr}</strong><br/>Wind Speed: ${speed} ${windLabel} from ${dir}${gustStr}`
         },
       },
-      legend: makeLegend(['Wind Speed', 'Wind Gust'], colors),
+      legend: makeLegend([`Wind Speed (${windLabel})`, `Wind Gust (${windLabel})`], colors),
       xAxis: makeTimeXAxis(colors),
       yAxis: makeYAxis(colors, {
         min: 0,
-        name: windLabel,
-        nameTextStyle: { fontSize: 11, color: colors.labelColor },
+        axisLabel: {
+          fontSize: 11,
+          color: colors.labelColor,
+          formatter: `{value} ${windLabel}`,
+        },
       }),
       dataZoom,
       series: [
         {
-          name: 'Wind Speed',
+          name: `Wind Speed (${windLabel})`,
           type: 'line',
           data: windData,
           smooth: false,
@@ -104,7 +107,7 @@ export function WindChart() {
           markArea: makeNightMarkArea(forecast) as never,
         },
         {
-          name: 'Wind Gust',
+          name: `Wind Gust (${windLabel})`,
           type: 'line',
           data: gustData,
           smooth: false,
