@@ -20,6 +20,7 @@ export function SettingsContent({ onSave }: Props = {}) {
   const setPressureUnit = useWeatherStore((s) => s.setPressureUnit)
   const setPrecipUnit = useWeatherStore((s) => s.setPrecipUnit)
   const setWindSpeedUnit = useWeatherStore((s) => s.setWindSpeedUnit)
+  const setTimeFormat = useWeatherStore((s) => s.setTimeFormat)
   const setTheme = useWeatherStore((s) => s.setTheme)
 
   const [apiKey, setDraftApiKey] = useState(storeApiKey ?? '')
@@ -34,6 +35,7 @@ export function SettingsContent({ onSave }: Props = {}) {
     setPressureUnit(units.pressure)
     setPrecipUnit(units.precipitation)
     setWindSpeedUnit(units.windSpeed)
+    setTimeFormat(units.timeFormat)
     setTheme(theme)
     onSave?.()
   }

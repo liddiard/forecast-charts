@@ -6,7 +6,6 @@ import { makeNightMarkArea } from '../../utils/nightAreas'
 import {
   makeTimeXAxis,
   makeYAxis,
-  dataZoom,
   makeTooltip,
   makeNowMarkLine,
   makeLegend,
@@ -55,7 +54,7 @@ export function PrecipitationChart() {
         [`Precip. Accum. Total (${precipLabel})`, `Hourly Liquid Precip. (${precipLabel})`],
         colors,
       ),
-      xAxis: makeTimeXAxis(colors),
+      xAxis: makeTimeXAxis(colors, units.timeFormat),
       yAxis: makeYAxis(colors, {
         min: 0,
         max: yMax,
@@ -66,7 +65,6 @@ export function PrecipitationChart() {
           formatter: (value: number) => `${+value.toFixed(1)} ${precipLabel}`,
         },
       }),
-      dataZoom,
       series: [
         {
           name: `Precip. Accum. Total (${precipLabel})`,
@@ -86,7 +84,7 @@ export function PrecipitationChart() {
         },
       ],
     }
-  }, [forecast, units.precipitation, colors])
+  }, [forecast, units.precipitation, units.timeFormat, colors])
 
   if (!forecast) return null
   return <ChartContainer option={option} className={styles.chartPrecipitation} />

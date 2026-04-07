@@ -56,7 +56,7 @@ export async function fetchForecast(
     }
   }
 
-  // Trim to exactly 7 full days from midnight so charts align with the daily carousel
+  // Trim to exactly 7 full days from midnight so charts align with the daily forecast
   const chartEndUnix = midnightUnix + 7 * 86400
   forecast.hourly.data = forecast.hourly.data.filter((p) => p.time < chartEndUnix)
   forecast.daily.data = forecast.daily.data.slice(0, 7)

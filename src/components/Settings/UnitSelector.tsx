@@ -4,6 +4,7 @@ import type {
   PressureUnit,
   PrecipUnit,
   WindSpeedUnit,
+  TimeFormat,
 } from '../../utils/units'
 import styles from './Settings.module.css'
 
@@ -60,6 +61,17 @@ export function UnitSelector({ units, onChange }: Props) {
         >
           <option value="hPa">hPa</option>
           <option value="inHg">inHg</option>
+        </select>
+      </div>
+      <div className={styles.unitGroup}>
+        <label className={styles.unitLabel}>Time</label>
+        <select
+          className={styles.unitSelect}
+          value={units.timeFormat}
+          onChange={(e) => onChange({ ...units, timeFormat: e.target.value as TimeFormat })}
+        >
+          <option value="12h">12-hour</option>
+          <option value="24h">24-hour</option>
         </select>
       </div>
     </div>

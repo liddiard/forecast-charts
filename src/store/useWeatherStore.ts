@@ -8,6 +8,7 @@ import type {
   PressureUnit,
   PrecipUnit,
   WindSpeedUnit,
+  TimeFormat,
 } from '../utils/units'
 import { DEFAULT_UNITS } from '../utils/units'
 
@@ -34,16 +35,13 @@ interface WeatherStore {
   error: string | null
   fetchForecast: () => Promise<void>
 
-  // UI
-  selectedDayIndex: number
-  setSelectedDayIndex: (i: number) => void
-
   // Units
   units: UnitPreferences
   setTemperatureUnit: (u: TemperatureUnit) => void
   setPressureUnit: (u: PressureUnit) => void
   setPrecipUnit: (u: PrecipUnit) => void
   setWindSpeedUnit: (u: WindSpeedUnit) => void
+  setTimeFormat: (u: TimeFormat) => void
 
   // Theme
   theme: ThemeMode
@@ -75,14 +73,12 @@ export const useWeatherStore = create<WeatherStore>()(
         }
       },
 
-      selectedDayIndex: 0,
-      setSelectedDayIndex: (i) => set({ selectedDayIndex: i }),
-
       units: DEFAULT_UNITS,
       setTemperatureUnit: (u) => set((s) => ({ units: { ...s.units, temperature: u } })),
       setPressureUnit: (u) => set((s) => ({ units: { ...s.units, pressure: u } })),
       setPrecipUnit: (u) => set((s) => ({ units: { ...s.units, precipitation: u } })),
       setWindSpeedUnit: (u) => set((s) => ({ units: { ...s.units, windSpeed: u } })),
+      setTimeFormat: (u) => set((s) => ({ units: { ...s.units, timeFormat: u } })),
 
       theme: 'auto',
       setTheme: (t) => set({ theme: t }),

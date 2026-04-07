@@ -6,7 +6,6 @@ import { makeNightMarkArea } from '../../utils/nightAreas'
 import {
   makeTimeXAxis,
   makeYAxis,
-  dataZoom,
   makeTooltip,
   makeNowMarkLine,
   makeLegend,
@@ -53,7 +52,7 @@ export function WindChart() {
         formatter: (params: unknown) => {
           if (!Array.isArray(params) || params.length === 0) return ''
           const p = params[0] as { value: [number, number]; data: { symbolRotate: number } }
-          const timeStr = formatTooltipTime(p.value[0])
+          const timeStr = formatTooltipTime(p.value[0], units.timeFormat)
           const speed = Math.round(p.value[1])
           const bearing = (p.data.symbolRotate + 180) % 360
           const directions = [
@@ -85,7 +84,7 @@ export function WindChart() {
         },
       },
       legend: makeLegend([`Wind Speed (${windLabel})`, `Wind Gust (${windLabel})`], colors),
-      xAxis: makeTimeXAxis(colors),
+      xAxis: makeTimeXAxis(colors, units.timeFormat),
       yAxis: makeYAxis(colors, {
         min: 0,
         axisLabel: {
@@ -94,7 +93,6 @@ export function WindChart() {
           formatter: `{value} ${windLabel}`,
         },
       }),
-      dataZoom,
       series: [
         {
           name: `Wind Speed (${windLabel})`,
@@ -117,7 +115,7 @@ export function WindChart() {
         },
       ],
     }
-  }, [forecast, units.windSpeed, colors])
+  }, [forecast, units.windSpeed, units.timeFormat, colors])
 
   if (!forecast) return null
   return <ChartContainer option={option} />

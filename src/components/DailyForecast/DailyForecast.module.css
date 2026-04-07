@@ -1,0 +1,77 @@
+.dailyForecast {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 16px 50px 8px; /* left/right matches chart grid padding */
+}
+
+.card {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 6; /* dayName, temps, icon, summary, precip, sun */
+  text-align: center;
+  padding: 8px 4px;
+}
+
+.dayName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-h);
+  margin: 0;
+}
+
+.temps {
+  font-size: 13px;
+  margin: 2px 0;
+}
+
+.tempHigh {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.tempLow {
+  color: #3b82f6;
+}
+
+.iconWrap {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0;
+}
+
+.summary {
+  font-size: 11px;
+  color: var(--text);
+  margin: 2px 0;
+  text-wrap: balance;
+}
+
+.precipRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text);
+  margin-top: 2px;
+}
+
+.precipIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.sunRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--text);
+  margin-top: 4px;
+}
+
+.sunIcon {
+  width: 14px;
+  height: 14px;
+}

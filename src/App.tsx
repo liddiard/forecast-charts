@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useWeatherStore } from './store/useWeatherStore'
 import { useForecast } from './hooks/useForecast'
 import { Header } from './components/Header/Header'
-import { DayCarousel } from './components/DayCarousel/DayCarousel'
+import { DailyForecast } from './components/DailyForecast/DailyForecast'
 import { ForecastCharts } from './components/Charts/ForecastCharts'
 import { SettingsContent } from './components/Settings/SettingsContent'
 import settingsStyles from './components/Settings/Settings.module.css'
@@ -77,10 +77,10 @@ function App() {
       )}
 
       {forecast && !loading && (
-        <>
-          <DayCarousel />
+        <div className={styles.forecastContent}>
+          <DailyForecast />
           <ForecastCharts />
-        </>
+        </div>
       )}
     </>
   )

@@ -34,3 +34,7 @@
   font-size: 14px;
   color: var(--danger);
 }
+
+.forecastContent {
+  min-width: 800px;
+}

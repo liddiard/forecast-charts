@@ -2,12 +2,14 @@ export type TemperatureUnit = 'C' | 'F'
 export type PressureUnit = 'hPa' | 'inHg'
 export type PrecipUnit = 'mm' | 'in'
 export type WindSpeedUnit = 'km/h' | 'mph' | 'm/s' | 'knots'
+export type TimeFormat = '12h' | '24h'
 
 export interface UnitPreferences {
   temperature: TemperatureUnit
   pressure: PressureUnit
   precipitation: PrecipUnit
   windSpeed: WindSpeedUnit
+  timeFormat: TimeFormat
 }
 
 export const DEFAULT_UNITS: UnitPreferences = {
@@ -15,6 +17,7 @@ export const DEFAULT_UNITS: UnitPreferences = {
   pressure: 'hPa',
   precipitation: 'mm',
   windSpeed: 'km/h',
+  timeFormat: '12h',
 }
 
 export function convertTemp(celsius: number, to: TemperatureUnit): number {

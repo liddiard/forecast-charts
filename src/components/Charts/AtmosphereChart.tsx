@@ -3,13 +3,7 @@ import type { EChartsOption } from 'echarts'
 import { useWeatherStore } from '../../store/useWeatherStore'
 import { convertPressure } from '../../utils/units'
 import { makeNightMarkArea } from '../../utils/nightAreas'
-import {
-  makeTimeXAxis,
-  dataZoom,
-  makeTooltip,
-  makeNowMarkLine,
-  grid,
-} from '../../utils/chartOptions'
+import { makeTimeXAxis, makeTooltip, makeNowMarkLine, grid } from '../../utils/chartOptions'
 import { useChartColors } from '../../hooks/useChartColors'
 import { ChartContainer } from './ChartContainer'
 
@@ -61,7 +55,7 @@ export function AtmosphereChart() {
         itemHeight: 10,
         itemGap: 12,
       },
-      xAxis: makeTimeXAxis(colors),
+      xAxis: makeTimeXAxis(colors, units.timeFormat),
       yAxis: [
         {
           type: 'value',
@@ -83,7 +77,6 @@ export function AtmosphereChart() {
           axisTick: { lineStyle: { color: colors.axisLineColor } },
         },
       ],
-      dataZoom,
       series: [
         {
           name: 'Cloud Cover (%)',
@@ -142,7 +135,7 @@ export function AtmosphereChart() {
         },
       ],
     }
-  }, [forecast, units.pressure, colors])
+  }, [forecast, units.pressure, units.timeFormat, colors])
 
   if (!forecast) return null
   return <ChartContainer option={option} />

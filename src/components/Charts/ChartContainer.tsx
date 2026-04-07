@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback, useState } from 'react'
+import { useRef, useEffect, useCallback } from 'react'
 import ReactECharts from 'echarts-for-react'
 import type { EChartsOption } from 'echarts'
 import * as echarts from 'echarts'
@@ -169,9 +169,6 @@ interface ChartContainerProps {
 
 export function ChartContainer({ option, theme, className }: ChartContainerProps) {
   const chartRef = useRef<ReactECharts>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const hintTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const [showHint, setShowHint] = useState(false)
   const { bgColor } = useChartColors()
   const bgColorRef = useRef(bgColor)
   // Keep bgColorRef in sync so callbacks capture the latest value without re-registering
@@ -206,40 +203,8 @@ export function ChartContainer({ option, theme, className }: ChartContainerProps
     }
   }, [])
 
-  useEffect(() => {
-    const container = containerRef.current
-    if (!container) return
-
-    const handleWheel = (e: WheelEvent) => {
-      if (e.ctrlKey || e.metaKey) {
-        // Let ECharts receive the event and handle zooming
-        return
-      }
-
-      // No modifier held: stop the event reaching ECharts so it can't call
-      // preventDefault() and block the page scroll. Since we never call
-      // preventDefault() ourselves, the browser scrolls the page normally.
-      e.stopPropagation()
-
-      setShowHint(true)
-      clearTimeout(hintTimerRef.current)
-      hintTimerRef.current = setTimeout(() => setShowHint(false), 2000)
-    }
-
-    // Capture phase fires before ECharts' listeners on the canvas child.
-    // passive: true — we never call preventDefault, so the scroll is never blocked.
-    container.addEventListener('wheel', handleWheel, {
-      capture: true,
-      passive: true,
-    })
-    return () => {
-      container.removeEventListener('wheel', handleWheel, { capture: true })
-      clearTimeout(hintTimerRef.current)
-    }
-  }, [])
-
   return (
-    <div ref={containerRef} className={className ?? styles.chart} style={{ position: 'relative' }}>
+    <div className={className ?? styles.chart}>
       <ReactECharts
         ref={chartRef}
         option={option}
@@ -248,11 +213,6 @@ export function ChartContainer({ option, theme, className }: ChartContainerProps
         onChartReady={onChartReady}
         notMerge
       />
-      {showHint && (
-        <div className={styles.scrollHint}>
-          Use <kbd>Ctrl</kbd> + scroll to zoom
-        </div>
-      )}
     </div>
   )
 }

@@ -6,7 +6,6 @@ import { makeNightMarkArea } from '../../utils/nightAreas'
 import {
   makeTimeXAxis,
   makeYAxis,
-  dataZoom,
   makeTooltip,
   makeNowMarkLine,
   makeLegend,
@@ -43,7 +42,7 @@ export function TemperatureChart() {
         [`Temperature (${unitLabel})`, `Feels Like (${unitLabel})`, `Dew Point (${unitLabel})`],
         colors,
       ),
-      xAxis: makeTimeXAxis(colors),
+      xAxis: makeTimeXAxis(colors, units.timeFormat),
       yAxis: makeYAxis(colors, {
         axisLabel: {
           fontSize: 11,
@@ -51,7 +50,6 @@ export function TemperatureChart() {
           formatter: `{value} ${unitLabel}`,
         },
       }),
-      dataZoom,
       series: [
         {
           name: `Feels Like (${unitLabel})`,
@@ -84,7 +82,7 @@ export function TemperatureChart() {
         },
       ],
     }
-  }, [forecast, units.temperature, colors])
+  }, [forecast, units.temperature, units.timeFormat, colors])
 
   if (!forecast) return null
   return <ChartContainer option={option} />

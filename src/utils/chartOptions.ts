@@ -1,5 +1,6 @@
 import type { EChartsOption } from 'echarts'
 import type { ChartColors } from '../hooks/useChartColors'
+import type { TimeFormat } from './units'
 
 const DEFAULT_COLORS: ChartColors = {
   labelColor: '#374151',
@@ -8,21 +9,41 @@ const DEFAULT_COLORS: ChartColors = {
   bgColor: '#ffffff',
 }
 
-export function makeTimeXAxis(colors: ChartColors = DEFAULT_COLORS): EChartsOption['xAxis'] {
+/** Formats a time value for 12-hour x-axis labels. */
+function format12hAxisLabel(value: number): string {
+  const d = new Date(value)
+  const month = d.toLocaleString(undefined, { month: 'short' })
+  const day = d.getDate()
+  const hours = d.getHours()
+  const minutes = d.getMinutes()
+  if (hours === 0 && minutes === 0) return `${month} ${day}`
+  const ampm = hours >= 12 ? 'PM' : 'AM'
+  const h = hours % 12 || 12
+  const mm = String(minutes).padStart(2, '0')
+  return `${month} ${day}\n${h}:${mm} ${ampm}`
+}
+
+export function makeTimeXAxis(
+  colors: ChartColors = DEFAULT_COLORS,
+  timeFormat: TimeFormat = '12h',
+): EChartsOption['xAxis'] {
   return {
     type: 'time',
     axisLabel: {
       fontSize: 11,
       color: colors.labelColor,
-      formatter: {
-        year: '{yyyy}',
-        month: '{MMM} {yyyy}',
-        day: '{MMM} {d}',
-        hour: '{MMM} {d}\n{HH}:{mm}',
-        minute: '{HH}:{mm}',
-        second: '{HH}:{mm}:{ss}',
-        millisecond: '{HH}:{mm}:{ss}',
-      },
+      formatter:
+        timeFormat === '12h'
+          ? format12hAxisLabel
+          : {
+              year: '{yyyy}',
+              month: '{MMM} {yyyy}',
+              day: '{MMM} {d}',
+              hour: '{MMM} {d}\n{HH}:{mm}',
+              minute: '{HH}:{mm}',
+              second: '{HH}:{mm}:{ss}',
+              millisecond: '{HH}:{mm}:{ss}',
+            },
     },
     splitLine: {
       show: true,
@@ -47,27 +68,17 @@ export function makeYAxis(
   } as EChartsOption['yAxis']
 }
 
-export const dataZoom: EChartsOption['dataZoom'] = [
-  {
-    type: 'inside',
-    xAxisIndex: 0,
-    filterMode: 'none',
-    // Always zoom when ECharts receives a wheel event. Our capture-phase
-    // listener in ChartContainer ensures ECharts only receives wheel events
-    // when Ctrl or Cmd is held, so this is safe.
-    zoomOnMouseWheel: true,
-    moveOnMouseMove: true,
-    moveOnMouseWheel: false,
-  },
-]
-
-function formatTooltipTime(ms: number): string {
+/** Formats a timestamp for display in chart tooltips. */
+function formatTooltipTime(ms: number, timeFormat: TimeFormat = '12h'): string {
   const d = new Date(ms)
   const month = d.toLocaleString(undefined, { month: 'short' })
   const day = d.getDate()
-  const hour = d.getHours()
-  const ampm = hour >= 12 ? 'PM' : 'AM'
-  const h12 = hour % 12 || 12
+  const hours = d.getHours()
+  if (timeFormat === '24h') {
+    return `${month} ${day}, ${String(hours).padStart(2, '0')}:00`
+  }
+  const ampm = hours >= 12 ? 'PM' : 'AM'
+  const h12 = hours % 12 || 12
   return `${month} ${day}, ${h12}:00 ${ampm}`
 }
 
