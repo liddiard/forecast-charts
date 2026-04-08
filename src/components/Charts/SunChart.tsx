@@ -77,7 +77,7 @@ export function SunChart() {
       grid,
       tooltip: makeTooltip(),
       legend: {
-        data: ['Sun Altitude (°)', 'UV Index'],
+        data: ['UV Index', 'Sun Altitude (°)'],
         bottom: 0,
         textStyle: { fontSize: 11, color: colors.labelColor },
         itemWidth: 16,
@@ -88,7 +88,9 @@ export function SunChart() {
       yAxis: [
         {
           type: 'value',
-          axisLabel: { fontSize: 11, color: colors.labelColor, formatter: '{value}°' },
+          min: 0,
+          max: Math.ceil(uvMax + 1),
+          axisLabel: { fontSize: 11, color: colors.labelColor },
           splitLine: { lineStyle: { type: 'dashed', color: colors.gridColor, opacity: 0.6 } },
           axisLine: { lineStyle: { color: colors.axisLineColor } },
           axisTick: { lineStyle: { color: colors.axisLineColor } },
@@ -96,9 +98,7 @@ export function SunChart() {
         {
           type: 'value',
           position: 'right',
-          min: 0,
-          max: Math.ceil(uvMax + 1),
-          axisLabel: { fontSize: 11, color: colors.labelColor },
+          axisLabel: { fontSize: 11, color: colors.labelColor, formatter: '{value}°' },
           splitLine: { show: false },
           axisLine: { lineStyle: { color: colors.axisLineColor } },
           axisTick: { lineStyle: { color: colors.axisLineColor } },
@@ -106,8 +106,20 @@ export function SunChart() {
       ],
       series: [
         {
+          name: 'UV Index',
+          type: 'line',
+          yAxisIndex: 0,
+          data: uvData,
+          smooth: true,
+          symbol: 'none',
+          lineStyle: { color: '#ef4444', width: 1.5 },
+          itemStyle: { color: '#ef4444' },
+          areaStyle: { color: '#ef4444', opacity: 0.1 },
+        },
+        {
           name: 'Sun Altitude (°)',
           type: 'line',
+          yAxisIndex: 1,
           data: aboveData as [number, number][],
           smooth: 0.3,
           symbol: 'none',
@@ -120,23 +132,13 @@ export function SunChart() {
         {
           name: 'Sun Altitude (°)',
           type: 'line',
+          yAxisIndex: 1,
           data: belowData as [number, number][],
           smooth: 0.3,
           symbol: 'none',
           connectNulls: false,
           lineStyle: { color: '#6d28d9', width: 2 },
           itemStyle: { color: '#6d28d9' },
-        },
-        {
-          name: 'UV Index',
-          type: 'line',
-          yAxisIndex: 1,
-          data: uvData,
-          smooth: true,
-          symbol: 'none',
-          lineStyle: { color: '#ef4444', width: 1.5 },
-          itemStyle: { color: '#ef4444' },
-          areaStyle: { color: '#ef4444', opacity: 0.1 },
         },
       ],
     }
