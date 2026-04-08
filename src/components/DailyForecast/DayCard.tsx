@@ -33,7 +33,7 @@ export function DayCard({ day }: DayCardProps) {
       <div className={styles.iconWrap}>
         <WeatherIcon icon={day.icon} size={48} />
       </div>
-      <p className={styles.summary}>{day.summary}</p>
+      <p className={styles.summary}>{day.summary.replace(/\.$/, '')}</p>
       <div className={styles.precipRow}>
         <WeatherIcon icon="raindrop" size={16} className={styles.precipIcon} />
         <span>{formatPrecip(precip, units.precipitation)}</span>
