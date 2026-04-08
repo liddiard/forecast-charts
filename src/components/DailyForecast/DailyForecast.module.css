@@ -1,7 +1,7 @@
 .dailyForecast {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  padding: 16px 50px 8px; /* left/right matches chart grid padding */
+  padding: 8px 50px; /* left/right matches chart grid padding */
 }
 
 .card {
@@ -36,7 +36,6 @@
 .iconWrap {
   display: flex;
   justify-content: center;
-  margin: 4px 0;
 }
 
 .summary {
