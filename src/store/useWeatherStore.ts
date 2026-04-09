@@ -31,6 +31,7 @@ interface WeatherStore {
 
   // Forecast
   forecast: PirateWeatherResponse | null
+  lastFetchedAt: number | null
   loading: boolean
   error: string | null
   fetchForecast: () => Promise<void>
@@ -58,6 +59,7 @@ export const useWeatherStore = create<WeatherStore>()(
       setLocation: (loc) => set({ location: loc }),
 
       forecast: null,
+      lastFetchedAt: null,
       loading: false,
       error: null,
       fetchForecast: async () => {
@@ -67,7 +69,7 @@ export const useWeatherStore = create<WeatherStore>()(
         set({ loading: true, error: null })
         try {
           const data = await fetchForecast(apiKey, location.lat, location.lon)
-          set({ forecast: data, loading: false })
+          set({ forecast: data, lastFetchedAt: Date.now(), loading: false })
         } catch (e) {
           set({ error: (e as Error).message, loading: false })
         }

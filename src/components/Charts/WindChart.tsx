@@ -26,8 +26,8 @@ export function WindChart() {
     const hourly = forecast.hourly.data
     const windLabel = units.windSpeed
 
-    // Elongated arrow centered on origin: tip at top (0,-5), base corners at (±2,5), notch at (0,2)
-    const arrowPath = 'path://M 0,-5 L 2,5 L 0,2 L -2,5 Z'
+    // Arrow centered on origin: tip at top (0,-5), base corners at (±1,5), notch at (0,2)
+    const arrowPath = 'path://M 0,-5 L 1,5 L 0,2 L -1,5 Z'
     const windData = hourly.map((h) => {
       const hour = new Date(h.time * 1000).getHours()
       const showArrow = hour % 3 === 0
