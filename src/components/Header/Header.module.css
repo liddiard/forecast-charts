@@ -1,8 +1,18 @@
 .header {
+  position: relative;
   display: flex;
   align-items: flex-end;
   gap: 12px;
   padding: 12px 0;
+}
+
+.lastUpdated {
+  position: absolute;
+  top: 12px;
+  right: 0;
+  font-size: 12px;
+  color: var(--text);
+  white-space: nowrap;
 }
 
 /* ── Location search (takes remaining space) ──────── */

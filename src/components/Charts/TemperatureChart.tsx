@@ -12,9 +12,13 @@ import {
   grid,
 } from '../../utils/chartOptions'
 import { useChartColors } from '../../hooks/useChartColors'
-import { ChartContainer } from './ChartContainer'
+import { ChartContainer, type AxisHoverHandler } from './ChartContainer'
 
-export function TemperatureChart() {
+interface TemperatureChartProps {
+  onAxisHover?: AxisHoverHandler
+}
+
+export function TemperatureChart({ onAxisHover }: TemperatureChartProps) {
   const forecast = useWeatherStore((s) => s.forecast)
   const units = useWeatherStore((s) => s.units)
   const colors = useChartColors()
@@ -85,5 +89,5 @@ export function TemperatureChart() {
   }, [forecast, units.temperature, units.timeFormat, colors])
 
   if (!forecast) return null
-  return <ChartContainer option={option} />
+  return <ChartContainer option={option} onAxisHover={onAxisHover} />
 }

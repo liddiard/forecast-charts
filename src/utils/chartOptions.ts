@@ -93,6 +93,17 @@ export function makeTooltip(): EChartsOption['tooltip'] {
   }
 }
 
+/**
+ * Formats a timestamp for the hover time label shown above charts.
+ * 12h → "1 PM", 24h → "13:00".
+ */
+export function formatHoverTime(ms: number, timeFormat: TimeFormat = '12h'): string {
+  const hours = new Date(ms).getHours()
+  if (timeFormat === '24h') return `${String(hours).padStart(2, '0')}:00`
+  const ampm = hours >= 12 ? 'PM' : 'AM'
+  return `${hours % 12 || 12} ${ampm}`
+}
+
 export { formatTooltipTime }
 
 export function makeNowMarkLine(): object {

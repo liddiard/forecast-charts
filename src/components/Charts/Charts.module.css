@@ -7,8 +7,21 @@
 }
 
 .chartsContainer {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 4px;
   padding: 4px 0;
+}
+
+.hoverTimeLabel {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-h);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
 }

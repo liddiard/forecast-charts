@@ -161,20 +161,27 @@ function clearInlineLabels(instance: echarts.ECharts, count: number) {
 
 const GROUP_ID = 'forecast'
 
+export type AxisHoverHandler = (time: number | null, pixelX: number) => void
+
 interface ChartContainerProps {
   option: EChartsOption
   theme?: string
   className?: string
+  onAxisHover?: AxisHoverHandler
 }
 
-export function ChartContainer({ option, theme, className }: ChartContainerProps) {
+export function ChartContainer({ option, theme, className, onAxisHover }: ChartContainerProps) {
   const chartRef = useRef<ReactECharts>(null)
   const { bgColor } = useChartColors()
   const bgColorRef = useRef(bgColor)
-  // Keep bgColorRef in sync so callbacks capture the latest value without re-registering
+  const onAxisHoverRef = useRef(onAxisHover)
+  // Keep refs in sync so callbacks capture the latest value without re-registering
   useEffect(() => {
     bgColorRef.current = bgColor
   }, [bgColor])
+  useEffect(() => {
+    onAxisHoverRef.current = onAxisHover
+  }, [onAxisHover])
 
   const onChartReady = useCallback((instance: echarts.ECharts) => {
     instance.group = GROUP_ID
@@ -184,11 +191,25 @@ export function ChartContainer({ option, theme, className }: ChartContainerProps
 
     function handleAxisPointerUpdate(params: unknown) {
       labelCount = renderInlineLabels(instance, params, labelCount, bgColorRef.current)
+
+      if (onAxisHoverRef.current) {
+        const p = params as { axesInfo?: Array<{ axisDim: string; value: number }> }
+        const xInfo = p.axesInfo?.find((a) => a.axisDim === 'x')
+        if (xInfo) {
+          // Use seriesIndex finder (consistent with renderInlineLabels) and a
+          // dummy Y of 0 — we only need the resulting pixel X coordinate.
+          const pixel = instance.convertToPixel({ seriesIndex: 0 }, [xInfo.value, 0])
+          if (pixel && Number.isFinite(pixel[0])) {
+            onAxisHoverRef.current(xInfo.value, pixel[0])
+          }
+        }
+      }
     }
 
     function handleGlobalOut() {
       clearInlineLabels(instance, labelCount)
       labelCount = 0
+      onAxisHoverRef.current?.(null, 0)
     }
 
     instance.on('updateAxisPointer', handleAxisPointerUpdate)
