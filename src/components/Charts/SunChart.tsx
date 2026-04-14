@@ -73,9 +73,25 @@ export function SunChart() {
       ],
     }
 
+    /** EPA UV Index color thresholds */
+    const uvPieces = [
+      { lte: 2, color: '#4eb400' }, // Low (green)
+      { gt: 2, lte: 5, color: '#d6c300' }, // Moderate (yellow)
+      { gt: 5, lte: 7, color: '#f85900' }, // High (orange)
+      { gt: 7, lte: 10, color: '#d8001d' }, // Very High (red)
+      { gt: 10, color: '#6b49c8' }, // Extreme (violet)
+    ]
+
     return {
       grid,
       tooltip: makeTooltip(),
+      visualMap: {
+        type: 'piecewise',
+        show: false,
+        dimension: 1,
+        seriesIndex: 0,
+        pieces: uvPieces,
+      },
       legend: {
         data: ['UV Index', 'Sun Altitude (°)'],
         bottom: 0,
@@ -112,9 +128,9 @@ export function SunChart() {
           data: uvData,
           smooth: true,
           symbol: 'none',
-          lineStyle: { color: '#ef4444', width: 1.5 },
+          lineStyle: { width: 1.5 },
           itemStyle: { color: '#ef4444' },
-          areaStyle: { color: '#ef4444', opacity: 0.1 },
+          areaStyle: { opacity: 0.1 },
         },
         {
           name: 'Sun Altitude (°)',
