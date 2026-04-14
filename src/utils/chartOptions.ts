@@ -60,6 +60,7 @@ export function makeYAxis(
 ): EChartsOption['yAxis'] {
   return {
     type: 'value',
+    splitNumber: 4,
     axisLabel: { fontSize: 11, color: colors.labelColor },
     splitLine: { lineStyle: { type: 'dashed', color: colors.gridColor, opacity: 0.6 } },
     axisLine: { lineStyle: { color: colors.axisLineColor } },

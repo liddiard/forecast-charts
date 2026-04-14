@@ -44,8 +44,8 @@ export function PrecipitationChart() {
     )
     // Round max up to nearest 0.1, minimum 0.1 so axis is always meaningful
     const yMax = Math.max(0.1, Math.ceil(dataMax * 10) / 10)
-    // Aim for ~5 ticks, but never finer than 0.1 increments
-    const yInterval = Math.max(0.1, Math.round((yMax / 5) * 10) / 10)
+    // Aim for ~4 ticks, but never finer than 0.1 increments
+    const yInterval = Math.max(0.1, Math.round((yMax / 4) * 10) / 10)
 
     return {
       grid,

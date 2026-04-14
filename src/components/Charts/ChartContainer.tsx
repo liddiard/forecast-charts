@@ -161,6 +161,9 @@ function clearInlineLabels(instance: echarts.ECharts, count: number) {
 
 const GROUP_ID = 'forecast'
 
+/** Shared registry of all connected chart instances and their current label counts. */
+const connectedCharts = new Map<echarts.ECharts, { labelCount: number }>()
+
 export type AxisHoverHandler = (time: number | null, pixelX: number) => void
 
 interface ChartContainerProps {
@@ -187,10 +190,11 @@ export function ChartContainer({ option, theme, className, onAxisHover }: ChartC
     instance.group = GROUP_ID
     echarts.connect(GROUP_ID)
 
-    let labelCount = 0
+    const state = { labelCount: 0 }
+    connectedCharts.set(instance, state)
 
     function handleAxisPointerUpdate(params: unknown) {
-      labelCount = renderInlineLabels(instance, params, labelCount, bgColorRef.current)
+      state.labelCount = renderInlineLabels(instance, params, state.labelCount, bgColorRef.current)
 
       if (onAxisHoverRef.current) {
         const p = params as { axesInfo?: Array<{ axisDim: string; value: number }> }
@@ -206,9 +210,12 @@ export function ChartContainer({ option, theme, className, onAxisHover }: ChartC
       }
     }
 
+    /** Clear tooltips on ALL connected charts, not just the one the mouse left. */
     function handleGlobalOut() {
-      clearInlineLabels(instance, labelCount)
-      labelCount = 0
+      for (const [chart, s] of connectedCharts) {
+        clearInlineLabels(chart, s.labelCount)
+        s.labelCount = 0
+      }
       onAxisHoverRef.current?.(null, 0)
     }
 
@@ -221,6 +228,10 @@ export function ChartContainer({ option, theme, className, onAxisHover }: ChartC
     if (instance) {
       instance.group = GROUP_ID
       echarts.connect(GROUP_ID)
+    }
+    // Remove chart from shared registry on unmount
+    return () => {
+      if (instance) connectedCharts.delete(instance)
     }
   }, [])
 
