@@ -51,6 +51,7 @@ function renderInlineLabels(
   params: unknown,
   prevCount: number,
   bgColor: string,
+  precision: number = 1,
 ): number {
   try {
     const p = params as { axesInfo?: Array<{ axisDim: string; value: number }> }
@@ -75,8 +76,14 @@ function renderInlineLabels(
       if (!pixel || !Number.isFinite(pixel[0]) || !Number.isFinite(pixel[1])) return
 
       const color = (s as { itemStyle?: { color?: string } }).itemStyle?.color ?? '#374151'
-      const rounded = Math.round(closest.bestY * 10) / 10
-      const displayVal = Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1)
+      const factor = 10 ** precision
+      const rounded = Math.round(closest.bestY * factor) / factor
+      const displayVal =
+        precision === 0
+          ? String(Math.round(closest.bestY))
+          : Number.isInteger(rounded)
+            ? String(rounded)
+            : rounded.toFixed(precision)
 
       // Extract unit from series name, e.g. "Temperature (°C)" → "°C"
       const name = (s as { name?: string }).name ?? ''
@@ -170,18 +177,30 @@ interface ChartContainerProps {
   option: EChartsOption
   theme?: string
   className?: string
+  /** Number of decimal places shown in inline tooltip labels (default: 1). */
+  precision?: number
   onAxisHover?: AxisHoverHandler
 }
 
-export function ChartContainer({ option, theme, className, onAxisHover }: ChartContainerProps) {
+export function ChartContainer({
+  option,
+  theme,
+  className,
+  precision = 1,
+  onAxisHover,
+}: ChartContainerProps) {
   const chartRef = useRef<ReactECharts>(null)
   const { bgColor } = useChartColors()
   const bgColorRef = useRef(bgColor)
+  const precisionRef = useRef(precision)
   const onAxisHoverRef = useRef(onAxisHover)
   // Keep refs in sync so callbacks capture the latest value without re-registering
   useEffect(() => {
     bgColorRef.current = bgColor
   }, [bgColor])
+  useEffect(() => {
+    precisionRef.current = precision
+  }, [precision])
   useEffect(() => {
     onAxisHoverRef.current = onAxisHover
   }, [onAxisHover])
@@ -194,7 +213,13 @@ export function ChartContainer({ option, theme, className, onAxisHover }: ChartC
     connectedCharts.set(instance, state)
 
     function handleAxisPointerUpdate(params: unknown) {
-      state.labelCount = renderInlineLabels(instance, params, state.labelCount, bgColorRef.current)
+      state.labelCount = renderInlineLabels(
+        instance,
+        params,
+        state.labelCount,
+        bgColorRef.current,
+        precisionRef.current,
+      )
 
       if (onAxisHoverRef.current) {
         const p = params as { axesInfo?: Array<{ axisDim: string; value: number }> }

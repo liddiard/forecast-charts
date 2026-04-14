@@ -145,5 +145,5 @@ export function SunChart() {
   }, [forecast, location, units.timeFormat, colors])
 
   if (!forecast || !location) return null
-  return <ChartContainer option={option} />
+  return <ChartContainer option={option} precision={0} />
 }

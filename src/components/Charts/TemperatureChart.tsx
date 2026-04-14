@@ -89,5 +89,5 @@ export function TemperatureChart({ onAxisHover }: TemperatureChartProps) {
   }, [forecast, units.temperature, units.timeFormat, colors])
 
   if (!forecast) return null
-  return <ChartContainer option={option} onAxisHover={onAxisHover} />
+  return <ChartContainer option={option} precision={0} onAxisHover={onAxisHover} />
 }

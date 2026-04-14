@@ -118,5 +118,5 @@ export function WindChart() {
   }, [forecast, units.windSpeed, units.timeFormat, colors])
 
   if (!forecast) return null
-  return <ChartContainer option={option} />
+  return <ChartContainer option={option} precision={0} />
 }
