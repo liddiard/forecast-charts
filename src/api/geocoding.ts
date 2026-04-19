@@ -5,7 +5,7 @@ const GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search'
 export async function searchCities(query: string): Promise<GeocodingResult[]> {
   if (query.trim().length < 2) return []
 
-  const url = `${GEOCODING_URL}?name=${encodeURIComponent(query)}&count=5&language=en&format=json`
+  const url = `${GEOCODING_URL}?name=${encodeURIComponent(query)}&language=en&format=json`
   const response = await fetch(url)
 
   if (!response.ok) {
