@@ -1,6 +1,6 @@
 import { format } from 'date-fns'
 import type { DailyDataPoint } from '../../types/forecast'
-import { WeatherIcon } from '../WeatherIcon/WeatherIcon'
+import { getMeteoconSvgUrl } from '../../utils/iconMap'
 import { convertTemp, convertPrecip, formatTemp, formatPrecip } from '../../utils/units'
 import { useWeatherStore } from '../../store/useWeatherStore'
 import styles from './DailyForecast.module.css'
@@ -31,35 +31,23 @@ export function DayCard({ day }: DayCardProps) {
         <span className={styles.tempLow}>{formatTemp(low, units.temperature)}</span>
       </p>
       <div className={styles.iconWrap}>
-        <WeatherIcon icon={day.icon} size={48} />
+        <img src={getMeteoconSvgUrl(day.icon)} alt={day.icon} width={48} height={48} />
       </div>
       <p className={styles.summary}>{day.summary.replace(/\.$/, '')}</p>
       <div className={styles.precipRow}>
-        <WeatherIcon icon="raindrop" size={16} className={styles.precipIcon} />
+        <img
+          src={getMeteoconSvgUrl('raindrop')}
+          alt="raindrop"
+          width={16}
+          height={16}
+          className={styles.precipIcon}
+        />
         <span>{formatPrecip(precip, units.precipitation)}</span>
       </div>
       <div className={styles.sunRow}>
-        <img
-          src={
-            new URL(
-              `../../../node_modules/@bybas/weather-icons/production/fill/all/sunrise.svg`,
-              import.meta.url,
-            ).href
-          }
-          alt="sunrise"
-          className={styles.sunIcon}
-        />
+        <img src={getMeteoconSvgUrl('sunrise')} alt="sunrise" className={styles.sunIcon} />
         <span>{sunrise}</span>
-        <img
-          src={
-            new URL(
-              `../../../node_modules/@bybas/weather-icons/production/fill/all/sunset.svg`,
-              import.meta.url,
-            ).href
-          }
-          alt="sunset"
-          className={styles.sunIcon}
-        />
+        <img src={getMeteoconSvgUrl('sunset')} alt="sunset" className={styles.sunIcon} />
         <span>{sunset}</span>
       </div>
     </div>

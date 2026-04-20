@@ -16,7 +16,7 @@
     "*.{ts,tsx,js}": "eslint --fix"
   },
   "dependencies": {
-    "@bybas/weather-icons": "^2.0.0",
+    "@meteocons/svg": "^0.1.0",
     "@types/suncalc": "^1.9.2",
     "date-fns": "^4.1.0",
     "echarts": "^6.0.0",
