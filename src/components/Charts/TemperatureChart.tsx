@@ -48,11 +48,13 @@ export function TemperatureChart({ onAxisHover }: TemperatureChartProps) {
       ),
       xAxis: makeTimeXAxis(colors, units.timeFormat),
       yAxis: makeYAxis(colors, {
+        scale: true,
         axisLabel: {
           fontSize: 11,
           color: colors.labelColor,
           formatter: `{value} ${unitLabel}`,
         },
+        minInterval: 5,
       }),
       series: [
         {

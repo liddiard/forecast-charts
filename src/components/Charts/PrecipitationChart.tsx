@@ -34,8 +34,8 @@ export function PrecipitationChart() {
     const dataMax = Math.max(0, ...intensityData.map(([, v]) => v as number))
     // Round max up to nearest 0.1, minimum 0.1 so axis is always meaningful
     const yMax = Math.max(0.1, Math.ceil(dataMax * 10) / 10)
-    // Aim for ~4 ticks, but never finer than 0.1 increments
-    const yInterval = Math.max(0.1, Math.round((yMax / 4) * 10) / 10)
+    // Aim for ~3 ticks, but never finer than 0.1 increments
+    const yInterval = Math.max(0.1, Math.round((yMax / 3) * 10) / 10)
 
     return {
       grid,
@@ -60,7 +60,7 @@ export function PrecipitationChart() {
           name: `Hourly Liquid Precip. (${precipLabel})`,
           type: 'bar',
           data: intensityData,
-          itemStyle: { color: '#93c5fd' },
+          itemStyle: { color: '#45d5f4' },
           barMaxWidth: 8,
           markLine: makeNowMarkLine() as never,
           markArea: makeNightMarkArea(forecast) as never,

@@ -65,6 +65,7 @@ export function AtmosphereChart() {
           splitLine: { lineStyle: { type: 'dashed', color: colors.gridColor, opacity: 0.6 } },
           axisLine: { lineStyle: { color: colors.axisLineColor } },
           axisTick: { lineStyle: { color: colors.axisLineColor } },
+          minInterval: 25,
         },
         {
           type: 'value',
