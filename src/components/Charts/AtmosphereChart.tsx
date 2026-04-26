@@ -46,8 +46,8 @@ export function AtmosphereChart() {
           'Cloud Cover (%)',
           'Chance of Precip. (%)',
           ...(hasSnow ? ['Chance of Snow (%)'] : []),
-          'Humidity (%)',
           `Pressure (${pressureLabel})`,
+          'Humidity (%)',
         ],
         bottom: 0,
         textStyle: { fontSize: 11, color: colors.labelColor },
@@ -115,15 +115,6 @@ export function AtmosphereChart() {
             ]
           : []),
         {
-          name: 'Humidity (%)',
-          type: 'line',
-          data: humidityData,
-          smooth: true,
-          symbol: 'none',
-          lineStyle: { color: '#84cc16', width: 1.5 },
-          itemStyle: { color: '#84cc16' },
-        },
-        {
           name: `Pressure (${pressureLabel})`,
           type: 'line',
           yAxisIndex: 1,
@@ -132,6 +123,15 @@ export function AtmosphereChart() {
           symbol: 'none',
           lineStyle: { color: pressureColor, width: 1.5 },
           itemStyle: { color: pressureColor },
+        },
+        {
+          name: 'Humidity (%)',
+          type: 'line',
+          data: humidityData,
+          smooth: true,
+          symbol: 'none',
+          lineStyle: { color: '#84cc16', width: 1.5 },
+          itemStyle: { color: '#84cc16' },
         },
       ],
     }
