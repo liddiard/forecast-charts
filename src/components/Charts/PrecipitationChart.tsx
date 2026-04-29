@@ -60,7 +60,7 @@ export function PrecipitationChart() {
           name: `Hourly Liquid Precip. (${precipLabel})`,
           type: 'bar',
           data: intensityData,
-          itemStyle: { color: '#45d5f4' },
+          itemStyle: { color: '#45d5f4', borderRadius: [4, 4, 0, 0] },
           barMaxWidth: 8,
           markLine: makeNowMarkLine() as never,
           markArea: makeNightMarkArea(forecast) as never,
