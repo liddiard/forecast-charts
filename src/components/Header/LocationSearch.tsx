@@ -18,14 +18,15 @@ export function LocationSearch() {
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
   const wrapperRef = useRef<HTMLDivElement>(null)
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([])
+  const isEditingRef = useRef(false)
 
-  // Keep the input in sync if location is set externally (e.g. geolocation)
+  // Sync input with external location changes (e.g. geolocation) when not actively editing
   useEffect(() => {
-    if (location && !showDropdown) {
+    if (location && !isEditingRef.current) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setQuery(location.name)
     }
-  }, [location, showDropdown])
+  }, [location])
 
   useEffect(() => {
     // Don't search if the query exactly matches the already-selected location
@@ -121,7 +122,13 @@ export function LocationSearch() {
           className={styles.input}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => (results.length > 0 || searching) && setShowDropdown(true)}
+          onFocus={() => {
+            isEditingRef.current = true
+            if (results.length > 0 || searching) setShowDropdown(true)
+          }}
+          onBlur={() => {
+            isEditingRef.current = false
+          }}
           onKeyDown={handleKeyDown}
           placeholder="Search city..."
           spellCheck={false}
