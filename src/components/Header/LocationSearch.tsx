@@ -148,7 +148,7 @@ export function LocationSearch() {
           title="Use current location"
           type="button"
         >
-          {geoLoading ? '...' : '📍'}
+          {geoLoading ? '...' : <span className={styles.currentLocationIcon} aria-hidden="true" />}
         </button>
       </div>
       {showingDropdown && (

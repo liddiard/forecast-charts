@@ -90,6 +90,14 @@
   border-color: var(--accent);
 }
 
+.currentLocationIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: oklch(0.58 0.2 255);
+  -webkit-mask: url('/crosshair.svg') center / contain no-repeat;
+  mask: url('/crosshair.svg') center / contain no-repeat;
+}
+
 .dropdown {
   position: absolute;
   top: 100%;
