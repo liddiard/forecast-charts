@@ -83,6 +83,12 @@
   transition:
     background 0.15s,
     border-color 0.15s;
+
+  &.currentLocation {
+    padding: 0;
+    aspect-ratio: 1;
+    justify-content: center;
+  }
 }
 
 .button:hover {
@@ -91,8 +97,8 @@
 }
 
 .currentLocationIcon {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.4rem;
+  height: 1.4rem;
   background-color: oklch(0.58 0.2 255);
   -webkit-mask: url('/crosshair.svg') center / contain no-repeat;
   mask: url('/crosshair.svg') center / contain no-repeat;

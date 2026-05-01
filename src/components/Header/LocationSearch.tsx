@@ -142,7 +142,7 @@ export function LocationSearch() {
           }
         />
         <button
-          className={styles.button}
+          className={`${styles.button} ${styles.currentLocation}`}
           onClick={requestLocation}
           disabled={geoLoading}
           title="Use current location"
