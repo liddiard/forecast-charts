@@ -46,9 +46,7 @@ export function DayCard({ day }: DayCardProps) {
       </div>
       <div className={styles.sunRow}>
         <img src={getMeteoconSvgUrl('sunrise')} alt="sunrise" className={styles.sunIcon} />
-        <span>{sunrise}</span>
-        <img src={getMeteoconSvgUrl('sunset')} alt="sunset" className={styles.sunIcon} />
-        <span>{sunset}</span>
+        <span>{sunrise}</span>–<span>{sunset}</span>
       </div>
     </div>
   )
