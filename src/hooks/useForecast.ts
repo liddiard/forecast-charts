@@ -1,14 +1,8 @@
 import { useEffect } from 'react'
 import { useWeatherStore } from '../store/useWeatherStore'
+import { getDayStartMs } from '../utils/timezone'
 
 const STALE_THRESHOLD_MS = 60 * 60 * 1000 // 1 hour
-
-/** Returns the start-of-day timestamp (ms) for a given timestamp in ms. */
-const getDayStart = (timestampMs: number) => {
-  const d = new Date(timestampMs)
-  d.setHours(0, 0, 0, 0)
-  return d.getTime()
-}
 
 export function useForecast() {
   const apiKey = useWeatherStore((s) => s.apiKey)
@@ -34,8 +28,10 @@ export function useForecast() {
 
       let dayChanged = false
       if (forecast?.daily?.data?.[0]) {
-        const forecastFirstDay = getDayStart(forecast.daily.data[0].time * 1000)
-        const todayStart = getDayStart(Date.now())
+        // Compare day boundaries in the forecast location's timezone, not the browser's
+        const { timezone } = forecast
+        const forecastFirstDay = getDayStartMs(forecast.daily.data[0].time * 1000, timezone)
+        const todayStart = getDayStartMs(Date.now(), timezone)
         dayChanged = forecastFirstDay < todayStart
       }
 

@@ -12,6 +12,7 @@ import {
   grid,
   formatTooltipTime,
 } from '../../utils/chartOptions'
+import { toZonedMs } from '../../utils/timezone'
 import { useChartColors } from '../../hooks/useChartColors'
 import { ChartContainer } from './ChartContainer'
 
@@ -24,15 +25,17 @@ export function WindChart() {
     if (!forecast) return {}
 
     const hourly = forecast.hourly.data
+    const { timezone } = forecast
     const windLabel = units.windSpeed
 
     // Arrow centered on origin: tip at top (0,-5), base corners at (±1,5), notch at (0,2)
     const arrowPath = 'path://M 0,-5 L 1,5 L 0,2 L -1,5 Z'
     const windData = hourly.map((h) => {
-      const hour = new Date(h.time * 1000).getHours()
+      const x = toZonedMs(h.time * 1000, timezone)
+      const hour = new Date(x).getUTCHours()
       const showArrow = hour % 3 === 0
       return {
-        value: [h.time * 1000, +convertWindSpeed(h.windSpeed, units.windSpeed).toFixed(1)],
+        value: [x, +convertWindSpeed(h.windSpeed, units.windSpeed).toFixed(1)],
         symbol: showArrow ? arrowPath : 'none',
         symbolSize: 14,
         symbolRotate: (h.windBearing + 180) % 360,
@@ -41,7 +44,7 @@ export function WindChart() {
     })
 
     const gustData = hourly.map((h) => [
-      h.time * 1000,
+      toZonedMs(h.time * 1000, timezone),
       +convertWindSpeed(h.windGust, units.windSpeed).toFixed(1),
     ])
 
@@ -101,7 +104,7 @@ export function WindChart() {
           smooth: false,
           lineStyle: { color: '#3b82f6', width: 1.5 },
           itemStyle: { color: '#3b82f6' },
-          markLine: makeNowMarkLine() as never,
+          markLine: makeNowMarkLine(timezone) as never,
           markArea: makeNightMarkArea(forecast) as never,
         },
         {

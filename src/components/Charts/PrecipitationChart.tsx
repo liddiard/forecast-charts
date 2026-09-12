@@ -11,6 +11,7 @@ import {
   makeLegend,
   grid,
 } from '../../utils/chartOptions'
+import { toZonedMs } from '../../utils/timezone'
 import { useChartColors } from '../../hooks/useChartColors'
 import { ChartContainer } from './ChartContainer'
 import styles from './Charts.module.css'
@@ -24,10 +25,11 @@ export function PrecipitationChart() {
     if (!forecast) return {}
 
     const hourly = forecast.hourly.data
+    const { timezone } = forecast
     const precipLabel = units.precipitation
 
     const intensityData = hourly.map((h) => [
-      h.time * 1000,
+      toZonedMs(h.time * 1000, timezone),
       +convertPrecip(h.precipIntensity, units.precipitation).toFixed(2),
     ])
 
@@ -62,7 +64,7 @@ export function PrecipitationChart() {
           data: intensityData,
           itemStyle: { color: '#45d5f4', borderRadius: [4, 4, 0, 0] },
           barMaxWidth: 8,
-          markLine: makeNowMarkLine() as never,
+          markLine: makeNowMarkLine(timezone) as never,
           markArea: makeNightMarkArea(forecast) as never,
         },
       ],

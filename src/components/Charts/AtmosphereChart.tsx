@@ -4,6 +4,7 @@ import { useWeatherStore } from '../../store/useWeatherStore'
 import { convertPressure } from '../../utils/units'
 import { makeNightMarkArea } from '../../utils/nightAreas'
 import { makeTimeXAxis, makeTooltip, makeNowMarkLine, grid } from '../../utils/chartOptions'
+import { toZonedMs } from '../../utils/timezone'
 import { useChartColors } from '../../hooks/useChartColors'
 import { ChartContainer } from './ChartContainer'
 
@@ -16,22 +17,32 @@ export function AtmosphereChart() {
     if (!forecast) return {}
 
     const hourly = forecast.hourly.data
+    const { timezone } = forecast
     const pressureLabel = units.pressure
 
-    const cloudData = hourly.map((h) => [h.time * 1000, +(h.cloudCover * 100).toFixed(1)])
+    const cloudData = hourly.map((h) => [
+      toZonedMs(h.time * 1000, timezone),
+      +(h.cloudCover * 100).toFixed(1),
+    ])
     const precipProbData = hourly.map((h) => [
-      h.time * 1000,
+      toZonedMs(h.time * 1000, timezone),
       +(h.precipProbability * 100).toFixed(1),
     ])
-    const humidityData = hourly.map((h) => [h.time * 1000, +(h.humidity * 100).toFixed(1)])
+    const humidityData = hourly.map((h) => [
+      toZonedMs(h.time * 1000, timezone),
+      +(h.humidity * 100).toFixed(1),
+    ])
     const snowProbData = hourly.map((h) => [
-      h.time * 1000,
+      toZonedMs(h.time * 1000, timezone),
       h.precipType === 'snow' ? +(h.precipProbability * 100).toFixed(1) : 0,
     ])
     const hasSnow = snowProbData.some((d) => (d[1] as number) > 0)
 
     const pressureValues = hourly.map((h) => convertPressure(h.pressure, units.pressure))
-    const pressureData = hourly.map((h, i) => [h.time * 1000, +pressureValues[i].toFixed(2)])
+    const pressureData = hourly.map((h, i) => [
+      toZonedMs(h.time * 1000, timezone),
+      +pressureValues[i].toFixed(2),
+    ])
     const pMin = Math.floor(Math.min(...pressureValues) - 2)
     const pMax = Math.ceil(Math.max(...pressureValues) + 2)
 
@@ -88,7 +99,7 @@ export function AtmosphereChart() {
           lineStyle: { color: '#9ca3af', width: 1 },
           itemStyle: { color: '#9ca3af' },
           areaStyle: { color: '#9ca3af', opacity: 0.2 },
-          markLine: makeNowMarkLine() as never,
+          markLine: makeNowMarkLine(timezone) as never,
           markArea: makeNightMarkArea(forecast) as never,
         },
         {

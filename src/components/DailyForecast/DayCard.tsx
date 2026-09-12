@@ -1,30 +1,31 @@
-import { format } from 'date-fns'
 import type { DailyDataPoint } from '../../types/forecast'
 import { getMeteoconSvgUrl } from '../../utils/iconMap'
 import { convertTemp, convertPrecip, formatTemp, formatPrecip } from '../../utils/units'
+import { formatZonedDay, formatZonedTime } from '../../utils/timezone'
 import { useWeatherStore } from '../../store/useWeatherStore'
 import styles from './DailyForecast.module.css'
 
 interface DayCardProps {
   day: DailyDataPoint
+  /** IANA timezone of the forecast location, used to render all times locally. */
+  timezone: string
 }
 
 /** Renders a single day's forecast summary within the daily forecast grid. */
-export function DayCard({ day }: DayCardProps) {
+export function DayCard({ day, timezone }: DayCardProps) {
   const units = useWeatherStore((s) => s.units)
-  const date = new Date(day.time * 1000)
   const high = convertTemp(day.temperatureHigh, units.temperature)
   const low = convertTemp(day.temperatureLow, units.temperature)
   const precip =
     day.precipAccumulation != null ? convertPrecip(day.precipAccumulation, units.precipitation) : 0
 
-  const timeFmt = units.timeFormat === '24h' ? 'H:mm' : 'h:mm a'
-  const sunrise = format(new Date(day.sunriseTime * 1000), timeFmt)
-  const sunset = format(new Date(day.sunsetTime * 1000), timeFmt)
+  const dayName = formatZonedDay(day.time * 1000, timezone)
+  const sunrise = formatZonedTime(day.sunriseTime * 1000, timezone, units.timeFormat)
+  const sunset = formatZonedTime(day.sunsetTime * 1000, timezone, units.timeFormat)
 
   return (
     <div className={styles.card}>
-      <p className={styles.dayName}>{format(date, 'EEE M/d')}</p>
+      <p className={styles.dayName}>{dayName}</p>
       <p className={styles.temps}>
         <span className={styles.tempHigh}>{formatTemp(high, units.temperature)}</span>
         {' | '}

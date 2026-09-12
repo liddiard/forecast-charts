@@ -11,7 +11,7 @@ export function DailyForecast() {
   return (
     <div className={styles.dailyForecast}>
       {forecast.daily.data.map((day) => (
-        <DayCard key={day.time} day={day} />
+        <DayCard key={day.time} day={day} timezone={forecast.timezone} />
       ))}
     </div>
   )

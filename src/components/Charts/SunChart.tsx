@@ -4,6 +4,7 @@ import SunCalc from 'suncalc'
 import { useWeatherStore } from '../../store/useWeatherStore'
 import { makeNightMarkArea } from '../../utils/nightAreas'
 import { makeTimeXAxis, makeTooltip, makeNowMarkLine, grid } from '../../utils/chartOptions'
+import { toZonedMs } from '../../utils/timezone'
 import { useChartColors } from '../../hooks/useChartColors'
 import { ChartContainer } from './ChartContainer'
 
@@ -21,14 +22,17 @@ export function SunChart() {
     if (!forecast || !location) return {}
 
     const hourly = forecast.hourly.data
+    const { timezone } = forecast
     const startMs = hourly[0].time * 1000
     const endMs = hourly[hourly.length - 1].time * 1000
 
-    // Compute sun altitude at 15-minute intervals for a precise sinusoidal curve
+    // Compute sun altitude at 15-minute intervals for a precise sinusoidal curve.
+    // SunCalc needs the real instant; only the plotted x-value is shifted to the
+    // location's wall clock so it aligns with the timezone-adjusted axis.
     const altitudeRaw: [number, number][] = []
     for (let t = startMs; t <= endMs; t += FIFTEEN_MIN_MS) {
       const pos = SunCalc.getPosition(new Date(t), location.lat, location.lon)
-      altitudeRaw.push([t, +(pos.altitude * RAD_TO_DEG).toFixed(1)])
+      altitudeRaw.push([toZonedMs(t, timezone), +(pos.altitude * RAD_TO_DEG).toFixed(1)])
     }
 
     // Split altitude into above/below horizon series for dual coloring.
@@ -56,11 +60,11 @@ export function SunChart() {
     }
 
     // UV Index from hourly data
-    const uvData = hourly.map((h) => [h.time * 1000, h.uvIndex])
+    const uvData = hourly.map((h) => [toZonedMs(h.time * 1000, timezone), h.uvIndex])
     const uvMax = Math.max(1, ...hourly.map((h) => h.uvIndex))
 
     // Merge "now" mark line with a horizon zero-line
-    const nowMarkLine = makeNowMarkLine() as { data: object[]; [k: string]: unknown }
+    const nowMarkLine = makeNowMarkLine(timezone) as { data: object[]; [k: string]: unknown }
     const mergedMarkLine = {
       ...nowMarkLine,
       data: [

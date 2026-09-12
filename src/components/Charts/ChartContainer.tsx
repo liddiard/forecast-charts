@@ -264,7 +264,7 @@ export function ChartContainer({
     <div className={className ?? styles.chart}>
       <ReactECharts
         ref={chartRef}
-        option={option}
+        option={{ ...option, useUTC: true }}
         style={{ height: '100%' }}
         theme={theme}
         onChartReady={onChartReady}

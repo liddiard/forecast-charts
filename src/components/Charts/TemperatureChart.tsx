@@ -11,6 +11,7 @@ import {
   makeLegend,
   grid,
 } from '../../utils/chartOptions'
+import { toZonedMs } from '../../utils/timezone'
 import { useChartColors } from '../../hooks/useChartColors'
 import { ChartContainer, type AxisHoverHandler } from './ChartContainer'
 
@@ -27,17 +28,21 @@ export function TemperatureChart({ onAxisHover }: TemperatureChartProps) {
     if (!forecast) return {}
 
     const hourly = forecast.hourly.data
+    const { timezone } = forecast
     const unitLabel = `°${units.temperature}`
 
     const tempData = hourly.map((h) => [
-      h.time * 1000,
+      toZonedMs(h.time * 1000, timezone),
       convertTemp(h.temperature, units.temperature),
     ])
     const feelsData = hourly.map((h) => [
-      h.time * 1000,
+      toZonedMs(h.time * 1000, timezone),
       convertTemp(h.apparentTemperature, units.temperature),
     ])
-    const dewData = hourly.map((h) => [h.time * 1000, convertTemp(h.dewPoint, units.temperature)])
+    const dewData = hourly.map((h) => [
+      toZonedMs(h.time * 1000, timezone),
+      convertTemp(h.dewPoint, units.temperature),
+    ])
 
     return {
       grid,
@@ -84,7 +89,7 @@ export function TemperatureChart({ onAxisHover }: TemperatureChartProps) {
           symbol: 'none',
           lineStyle: { color: '#ef4444', width: 1.5 },
           itemStyle: { color: '#ef4444' },
-          markLine: makeNowMarkLine() as never,
+          markLine: makeNowMarkLine(timezone) as never,
         },
       ],
     }

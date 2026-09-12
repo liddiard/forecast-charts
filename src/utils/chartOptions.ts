@@ -1,6 +1,22 @@
 import type { EChartsOption } from 'echarts'
 import type { ChartColors } from '../hooks/useChartColors'
 import type { TimeFormat } from './units'
+import { toZonedMs } from './timezone'
+
+const SHORT_MONTHS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+]
 
 const DEFAULT_COLORS: ChartColors = {
   labelColor: '#374151',
@@ -9,13 +25,16 @@ const DEFAULT_COLORS: ChartColors = {
   bgColor: '#ffffff',
 }
 
-/** Formats a time value for 12-hour x-axis labels. */
+/**
+ * Formats a time value for 12-hour x-axis labels. Values are wall-clock-as-UTC
+ * (see `toZonedMs`), so UTC getters are used to read the location's local time.
+ */
 function format12hAxisLabel(value: number): string {
   const d = new Date(value)
-  const month = d.toLocaleString(undefined, { month: 'short' })
-  const day = d.getDate()
-  const hours = d.getHours()
-  const minutes = d.getMinutes()
+  const month = SHORT_MONTHS[d.getUTCMonth()]
+  const day = d.getUTCDate()
+  const hours = d.getUTCHours()
+  const minutes = d.getUTCMinutes()
   if (hours === 0 && minutes === 0) return `${month} ${day}`
   const ampm = hours >= 12 ? 'PM' : 'AM'
   const h = hours % 12 || 12
@@ -69,12 +88,15 @@ export function makeYAxis(
   } as EChartsOption['yAxis']
 }
 
-/** Formats a timestamp for display in chart tooltips. */
+/**
+ * Formats a timestamp for display in chart tooltips. Values are wall-clock-as-UTC
+ * (see `toZonedMs`), so UTC getters are used to read the location's local time.
+ */
 function formatTooltipTime(ms: number, timeFormat: TimeFormat = '12h'): string {
   const d = new Date(ms)
-  const month = d.toLocaleString(undefined, { month: 'short' })
-  const day = d.getDate()
-  const hours = d.getHours()
+  const month = SHORT_MONTHS[d.getUTCMonth()]
+  const day = d.getUTCDate()
+  const hours = d.getUTCHours()
   if (timeFormat === '24h') {
     return `${month} ${day}, ${String(hours).padStart(2, '0')}:00`
   }
@@ -96,10 +118,10 @@ export function makeTooltip(): EChartsOption['tooltip'] {
 
 /**
  * Formats a timestamp for the hover time label shown above charts.
- * 12h → "1 PM", 24h → "13:00".
+ * 12h → "1 PM", 24h → "13:00". Values are wall-clock-as-UTC (see `toZonedMs`).
  */
 export function formatHoverTime(ms: number, timeFormat: TimeFormat = '12h'): string {
-  const hours = new Date(ms).getHours()
+  const hours = new Date(ms).getUTCHours()
   if (timeFormat === '24h') return `${String(hours).padStart(2, '0')}:00`
   const ampm = hours >= 12 ? 'PM' : 'AM'
   return `${hours % 12 || 12} ${ampm}`
@@ -107,12 +129,16 @@ export function formatHoverTime(ms: number, timeFormat: TimeFormat = '12h'): str
 
 export { formatTooltipTime }
 
-export function makeNowMarkLine(): object {
+/**
+ * Builds the "now" mark line. The current instant is shifted into the location's
+ * wall clock so it aligns with the timezone-adjusted chart x-axis.
+ */
+export function makeNowMarkLine(timeZone: string): object {
   return {
     silent: true,
     symbol: 'none',
     lineStyle: { type: 'dashed', color: '#f59e0b', width: 2 },
-    data: [{ xAxis: Date.now() }],
+    data: [{ xAxis: toZonedMs(Date.now(), timeZone) }],
     label: { show: false },
   }
 }
