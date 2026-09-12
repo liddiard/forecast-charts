@@ -19,6 +19,7 @@ export function LocationSearch() {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([])
   const isEditingRef = useRef(false)
+  const justFocusedRef = useRef(false)
 
   // Sync input with external location changes (e.g. geolocation) when not actively editing
   useEffect(() => {
@@ -122,9 +123,18 @@ export function LocationSearch() {
           className={styles.input}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => {
+          onFocus={(e) => {
             isEditingRef.current = true
+            justFocusedRef.current = true
+            e.currentTarget.select()
             if (results.length > 0 || searching) setShowDropdown(true)
+          }}
+          onMouseUp={(e) => {
+            // Prevent the mouse click from clearing the selection made on focus
+            if (justFocusedRef.current) {
+              e.preventDefault()
+              justFocusedRef.current = false
+            }
           }}
           onBlur={() => {
             isEditingRef.current = false
